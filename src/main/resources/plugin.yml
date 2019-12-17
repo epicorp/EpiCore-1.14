@@ -1,0 +1,4 @@
+name: EpiCore
+version: @version@
+main: net.epicorp.epicore.EpiCore
+api-version: 1.13

@@ -46,3 +46,7 @@ bin/
 # fabric / paper
 
 run/
+
+# anti-dmca
+
+buildtools/
