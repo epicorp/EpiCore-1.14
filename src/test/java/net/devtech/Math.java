@@ -1,22 +1,15 @@
 package net.devtech;
 
-import static java.lang.Math.*;
+import org.bukkit.Bukkit;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
 
 public class Math {
 	public static void main(String[] args) {
-		for (int i = 30; i < 60; i++) {
-			double yvel = sin(toRadians(i))*100;
-			int time = 0;
-			for (int i1 = 1; i1 < 100; i1++) {
-			//	System.out.print(findDistanceTraveled(yvel, i1) + " ");
-				if(fuzzyEquals(findDistanceTraveled(yvel, i1), 0)) {
-					time = i1;
-					break;
-				}
-			}
-
-			System.out.println(i + " " + time*cos(toRadians(i))*10);
-		}
+		System.out.println(findDistanceTraveled(0, 12));
+		System.out.println(findDistance(0, 12));
+		Bukkit.createInventory()
 	}
 
 
@@ -29,12 +22,15 @@ public class Math {
 		return (3.92 + init) * pow(.98, time) - 3.92;
 	}
 
+	public static double findDistance(double init, int time) {
+		return -194.033*init*pow(0.98,time) - 3.92*time + 35.853729850040814;
+	}
+
 	public static double findInitialVelocity(int time, double after) {
 		return (after / (pow(.98, time) - 3.92)) - 3.92;
 	}
 
 	public static double findDistanceTraveled(double initVel, double time) {
-		//return initVel*time - 4.9*time*time;
 		if (time < 1) return 0;
 		return initVel + findDistanceTraveled((initVel - .08D) * .98, time - 1);
 	}

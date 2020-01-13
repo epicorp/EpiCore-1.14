@@ -8,37 +8,46 @@ targetCompatibility = '1.8'
 
 Project parent = project
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'papermc-repo'
-        url = 'https://papermc.io/repo/repository/maven-public/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    subprojects {
-        compile it
-    }
-}
-
 allprojects {
     apply plugin: 'java'
     repositories {
+        mavenCentral()
+        maven {
+            name = 'papermc-repo'
+            url = 'https://papermc.io/repo/repository/maven-public/'
+        }
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/groups/public/'
+        }
         mavenLocal()
     }
+
     dependencies {
-        compile "org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT"
-        compile "org.bukkit:bukkit:1.14.4-R0.1-SNAPSHOT"
-        compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.0'
-        compile fileTree(dir: parent.projectDir.toString()+"\\libs", include: '*.jar')
+        compileOnly "org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT"
+        compileOnly fileTree(dir: parent.projectDir.toString() + "\\libs", include: '*.jar')
     }
+}
+
+configurations {
+    includeInJar
+}
+
+dependencies {
+    subprojects {
+        includeInJar it
+    }
+
+    includeInJar fileTree(dir: projectDir.toString() + "\\libs", include: '*.jar')
+    configurations.compile.extendsFrom(configurations.includeInJar)
+}
+
+jar {
+    from configurations.includeInJar.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+tasks.withType(Jar) {
+    destinationDir = file("$rootDir/run/plugins")
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens

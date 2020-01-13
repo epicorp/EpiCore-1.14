@@ -20,10 +20,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public class ItemManager implements Listener {
+	public static final Function<Plugin, NamespacedKey> PERSISTENT_DATA =  p -> new NamespacedKey(p, "net.epicorp.persistentdata");
 	private EventMapper<ItemStack> eventMapper;
-	private InheritedMap<Object, Method> annotated = InheritedMap.getMethodsAnnotated(Object.class, ItemEventListener.class);
+	private InheritedMap<CustomItem, Method> annotated = InheritedMap.getMethodsAnnotated(CustomItem.class, ItemEventListener.class);
 	private Map<ItemListener, TriConsumer<CustomItem, ItemStack, Event>> consume = new HashMap<>();
 	private PersistentRegistry registry;
 	private Set<ListenerContainer> listenerContainers = new HashSet<>();
@@ -55,7 +57,7 @@ public class ItemManager implements Listener {
 						ItemStack stack = this.eventMapper.map(e);
 						if (stack != null) {
 							PersistentDataContainer persist = stack.getItemMeta().getPersistentDataContainer();
-							NamespacedKey key = new NamespacedKey(this.plugin, "net.epicorp.persistentdata");
+							NamespacedKey key = PERSISTENT_DATA.apply(this.plugin);
 							byte[] data = persist.get(key, PersistentDataType.BYTE_ARRAY);
 							if (data != null) {
 								CustomItem citem = (CustomItem) this.registry.fromByteArray(data);

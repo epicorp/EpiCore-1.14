@@ -6,16 +6,22 @@ import net.devtech.yajslib.io.PersistentInputStream;
 import net.devtech.yajslib.io.PersistentOutputStream;
 import net.epicorp.items.CustomItem;
 import net.epicorp.items.ItemEventListener;
+import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import java.io.IOException;
 
-public class TestItem implements CustomItem {
+public class TestItem extends CustomItem {
 	int hey;
+
+	public TestItem(Plugin plugin) {
+		super(plugin);
+	}
 
 	@ItemEventListener
 	public void listen(PlayerInteractEvent event) {
-		System.out.println(hey);
+		System.out.println(this.hey);
 	}
 
 	@Writer(10L)
@@ -29,7 +35,7 @@ public class TestItem implements CustomItem {
 	}
 
 	@Override
-	public ItemStack base() {
-		return null;
+	protected ItemStack baseStack() {
+		return new ItemStack(Material.STONE);
 	}
 }
